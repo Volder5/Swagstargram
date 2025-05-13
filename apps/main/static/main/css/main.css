@@ -1,0 +1,117 @@
+body {
+    background: black;
+    color: #fff;
+    
+}
+
+aside {
+    float: left;
+    background: black;
+    width: 17%;
+    height: 100vh;
+    padding: 2.5%;
+    color: #fff;
+    border-right: 1px solid #4d4d4d;
+    
+
+}
+
+aside ul a {
+    text-decoration: none; /* Removes underline */
+}
+
+aside img {
+    width: 80px;
+    height: auto;
+    float: left;
+}
+
+aside .logo {
+    font-size: 15px;
+    font-family: "Special Gothic Expanded One", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: #fff;
+    margin-left: -15px;
+    position: relative;
+    top: 10px;
+}
+
+aside h3 {
+    font-size: 28px;
+    color: #fff;
+    margin-top: 25px;
+    
+}
+
+aside ul {
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+    margin-left: -40px;
+    margin-top: 50px;
+    list-style: none;
+    
+}
+
+aside ul li i {
+    margin-right: 10px;
+}
+
+aside ul li {
+    transition: all 0.3s ease;
+    color: #fff;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+aside ul li:hover, a:hover {
+    color: red;
+    text-decoration: none;
+    transform: scale(1.05);
+}
+
+main .features {
+    float: left;
+    color: #fff;
+    margin-top: 100px;
+    text-align: center;
+    width: 75%;
+}
+
+main .features h1 {
+    font-size: 50px;
+
+}
+
+main .features p {
+    max-width: 400px;
+    margin: 20px auto;
+
+}
+
+.alert-warning {
+    float: left;
+    clear: both;
+    width: 400px;
+    margin: 20px 34%;
+    text-align: left;
+}
+
+form {
+    margin-left: 32%;
+    width: 500px;
+    margin-top: 50px;
+}
+.btn-succes {
+    background-color: rgb(34, 161, 34);
+    color: white;
+}
+.btn-succes:hover {
+    background-color: rgb(34, 126, 74);
+    text-decoration: none;
+    transform: scale(1.05);
+}
+
+

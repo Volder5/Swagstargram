@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <link rel="stylesheet" href="{% static 'users/css/auth.css' %}">
+</head>
+<body>
+    <div class="form-wrapper">
+        <form method="POST">
+            <h2>Email Verification</h2>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="code">Enter the 6-digit code sent to your email</label>
+                <input name="code" type="text" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Verify</button>
+        </form>
+        {% if messages %}
+            <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
