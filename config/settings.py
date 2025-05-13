@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from django.urls import reverse_lazy
 from pathlib import Path
-
+import config.customtokens as customtokens
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-czq#q($6j!v^w45aof(u9)i77frmrx26l(56s17a*2cz&%)wg0'
+SECRET_KEY = customtokens.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -133,9 +133,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # This enables TLS
-EMAIL_HOST_USER = 'noreply.swagstargram@gmail.com'  # Replace with your Gmail address
-EMAIL_HOST_PASSWORD = 'vogv wuzn mqnt cneh'  # Replace with your Gmail password or app-specific password
-DEFAULT_FROM_EMAIL = 'noreply.swagstargram@gmail.com'
+EMAIL_HOST_USER = customtokens.EMAIL_HOST_USER # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = customtokens.EMAIL_HOST_PASSWORD  # Replace with your Gmail password or app-specific password
+DEFAULT_FROM_EMAIL = customtokens.DEFAULT_FROM_EMAIL
 
 
 LOGIN_URL = '/users/login/'
