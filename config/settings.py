@@ -122,19 +122,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = config("STATIC_URL")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True  # This enables TLS
-EMAIL_HOST_USER = config("EMAIL_HOST_USER") # Replace with your Gmail address
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")  # Replace with your Gmail password or app-specific password
+EMAIL_BACKEND = config("EMAIL_BACKEND")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER") 
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD") 
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 
