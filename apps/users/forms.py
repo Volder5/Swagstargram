@@ -22,13 +22,13 @@ class RegisterForm(forms.Form):
         username = self.cleaned_data['username']
         if not re.match(r'^[\w]+$', username):
             raise ValidationError("Login need to involve only letters, digits and underscores.")
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username=username, is_active=True).exists():
             raise ValidationError("Login is used by another user.")
         return username
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email, is_active=True).exists():
             raise ValidationError("This email is already registered.")
         if len(email) > 32:
             raise ValidationError("Email is too long.")
