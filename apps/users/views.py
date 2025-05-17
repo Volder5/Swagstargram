@@ -95,7 +95,7 @@ def register_page(request):
 
 
 @require_http_methods(["GET", "POST"])
-def email_verification_page(request):
+def email_verification_page(request, recovery=False):
     form = EmailVerificationForm(request.POST)
     if form.is_valid():
         user_id = request.session.get('user_id')
@@ -108,22 +108,27 @@ def email_verification_page(request):
             verification = EmailVerification.objects.filter(
                 user=user,
                 code=input_code,
-                is_verified=False,
+                is_verified=False,  # Always check unverified codes
                 created_at__gte=timezone.now() - timedelta(minutes=5)
             ).first()
             if verification:
-                verification.is_verified = True
-                verification.save()
-                user.is_active = True
-                user.save()
-                if 'user_id' in request.session:
-                    del request.session['user_id']
-                messages.success(request, "Email verified and account created!")
-                if user is not None:
-                    login(request, user)
-                    return redirect('main')
+                if not recovery:
+                    verification.is_verified = True
+                    verification.save()
+                    user.is_active = True
+                    user.save()
+                    messages.success(request, "Email verified and account created!")
+                    if 'user_id' in request.session:
+                        del request.session['user_id']
+                    if user is not None:
+                        login(request, user)
+                        return redirect('main')
+                    else:
+                        return redirect('login')
                 else:
-                    return redirect('login')
+                    verification.is_verified = True
+                    verification.save()
+                    return redirect("change_password")
             else:
                 messages.error(request, "Invalid or expired verification code.")
         except User.DoesNotExist:
@@ -132,9 +137,73 @@ def email_verification_page(request):
     else:
         messages.error(request, "Please fix the errors in the form.")
 
-    return render(request, "users/email_verification.html", {"form": form})
+    return render(request, "users/email_verification.html", {"form": form, "recovery": recovery})
 
+@require_http_methods(["GET", "POST"])
+def recovery_page(request):
+    if request.method == "POST":
+        form = RecoveryForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = User.objects.filter(email=email, is_active=True).first()
+            if user:
+                verification_code = str(random.randint(100000, 999999))
+                EmailVerification.objects.create(
+                    user=user,
+                    code=verification_code,
+                    is_verified=False
+                )
+                try:
+                    send_mail(
+                        'Verify your email',
+                        f'Your verification code is {verification_code}\nUsername: {user.username}',
+                        'noreply@swagstargram.com',
+                        [email],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    messages.error(request, f"Failed to send email: {str(e)}")
+                    return render(request, "users/recovery_email_input.html", {"form": form})
+                messages.success(request, "Recovery code sent to your email.")
+                request.session['user_id'] = user.id
+                return redirect('email_verify', recovery=1)
+            else:
+                messages.error(request, "No active user found with this email.")
+        else:
+            messages.error(request, "Please fix the errors in the form.")
+    else:
+        form = RecoveryForm()
+    return render(request, "users/recovery_email_input.html", {"form": form})
+                        
+
+@require_http_methods(["GET", "POST"])
+def change_password_page(request):
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            user_id = request.session.get('user_id')
+            if not user_id:
+                messages.error(request, "Session expired. Please try again.")
+                return redirect('recovery')
+            try:
+                user = User.objects.get(id=user_id)
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                messages.success(request, "Password changed successfully!")
+                if 'user_id' in request.session:
+                    del request.session['user_id']
+                return redirect('login')
+            except User.DoesNotExist:
+                messages.error(request, "Invalid session. Please try again.")
+                return redirect('recovery')
+        else:
+            messages.error(request, "Please fix the errors in the form.")
+    else:
+        form = ChangePasswordForm()
+    return render(request, "users/change_password.html", {"form": form})
 
 @login_required
 def profile_page(request):
     return render(request, "users/profile.html")
+
+
