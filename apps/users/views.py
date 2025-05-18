@@ -15,21 +15,22 @@ from datetime import timedelta
 
 @require_http_methods(["GET", "POST"])
 def login_page(request):
-    if request.user.is_authenticated:
-        return redirect('main')
-    print(request.method)
-    form = LoginForm(request.POST)
-    if form.is_valid():
-        username = form.cleaned_data["username"]
-        password = form.cleaned_data["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
+    if request.method == "POST":
+        if request.user.is_authenticated:
             return redirect('main')
+        print(request.method)
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('main')
+            else:
+                messages.error(request, "Invalid credentials")
         else:
-            messages.error(request, "Invalid credentials")
-    else:
-        messages.error(request, "Please fix the errors in the form")
+            messages.error(request, "Please fix the errors in the form")
     return render(request, "users/login.html")
 
 
@@ -97,47 +98,50 @@ def register_page(request):
 @require_http_methods(["GET", "POST"])
 def email_verification_page(request, recovery=False):
     form = EmailVerificationForm(request.POST)
-    if form.is_valid():
-        user_id = request.session.get('user_id')
-        if not user_id:
-            messages.error(request, "Session expired. Please register again.")
-            return redirect('register')
-        try:
-            user = User.objects.get(id=user_id)
-            input_code = form.cleaned_data['code']
-            verification = EmailVerification.objects.filter(
-                user=user,
-                code=input_code,
-                is_verified=False,  # Always check unverified codes
-                created_at__gte=timezone.now() - timedelta(minutes=5)
-            ).first()
-            if verification:
-                if not recovery:
-                    verification.is_verified = True
-                    verification.save()
-                    user.is_active = True
-                    user.save()
-                    messages.success(request, "Email verified and account created!")
-                    if 'user_id' in request.session:
-                        del request.session['user_id']
-                    if user is not None:
-                        login(request, user)
-                        return redirect('main')
+    if request.method == "POST":
+        if form.is_valid():
+            user_id = request.session.get('user_id')
+            if not user_id:
+                messages.error(request, "Session expired. Please register again.")
+                return redirect('register')
+            try:
+                user = User.objects.get(id=user_id)
+                input_code = form.cleaned_data['code']
+                verification = EmailVerification.objects.filter(
+                    user=user,
+                    code=input_code,
+                    is_verified=False,  # Always check unverified codes
+                    created_at__gte=timezone.now() - timedelta(minutes=5)
+                ).first()
+                if verification:
+                    if not recovery:
+                        verification.is_verified = True
+                        verification.save()
+                        user.is_active = True
+                        user.save()
+                        messages.success(request, "Email verified and account created!")
+                        if 'user_id' in request.session:
+                            del request.session['user_id']
+                        if user is not None:
+                            login(request, user)
+                            return redirect('main')
+                        else:
+                            return redirect('login')
                     else:
-                        return redirect('login')
+                        verification.is_verified = True
+                        verification.save()
+                        return redirect("change_password")
                 else:
-                    verification.is_verified = True
-                    verification.save()
-                    return redirect("change_password")
+                    messages.error(request, "Invalid or expired verification code.")
+            except User.DoesNotExist:
+                messages.error(request, "Invalid session. Please register again.")
+                return redirect('register')
             else:
-                messages.error(request, "Invalid or expired verification code.")
-        except User.DoesNotExist:
-            messages.error(request, "Invalid session. Please register again.")
-            return redirect('register')
-    else:
-        messages.error(request, "Please fix the errors in the form.")
+                messages.error(request, "Please fix the errors in the form.")
+        else:
+            form = EmailVerificationForm()
 
-    return render(request, "users/email_verification.html", {"form": form, "recovery": recovery})
+        return render(request, "users/email_verification.html", {"form": form, "recovery": recovery})
 
 @require_http_methods(["GET", "POST"])
 def recovery_page(request):
