@@ -16,7 +16,7 @@ from datetime import timedelta
 @require_http_methods(["GET", "POST"])
 def login_page(request):
     if request.user.is_authenticated:
-            return redirect('main')
+        return redirect('main')
     form = LoginForm(request.POST)
     if request.method == "POST" and form.is_valid():
         print(request.method)
@@ -50,13 +50,15 @@ def register_page(request):
             user.set_password(password)
             user.save()
             # Update or create verification record
-            verification = EmailVerification.objects.filter(user=user, is_verified=False).first()
+            verification = EmailVerification.objects.filter(
+                user=user, is_verified=False).first()
             if verification:
                 verification.code = verification_code
                 verification.created_at = timezone.now()  # Reset timestamp
                 verification.save()
             else:
-                EmailVerification.objects.create(user=user, code=verification_code)
+                EmailVerification.objects.create(
+                    user=user, code=verification_code)
         except User.DoesNotExist:
             # Create new user
             user = User.objects.create_user(
@@ -115,7 +117,8 @@ def email_verification_page(request, recovery=False):
                     verification.save()
                     user.is_active = True
                     user.save()
-                    messages.success(request, "Email verified and account created!")
+                    messages.success(
+                        request, "Email verified and account created!")
                     if 'user_id' in request.session:
                         del request.session['user_id']
                     if user is not None:
@@ -128,15 +131,16 @@ def email_verification_page(request, recovery=False):
                     verification.save()
                     return redirect("change_password")
             else:
-                messages.error(request, "Invalid or expired verification code.")
+                messages.error(
+                    request, "Invalid or expired verification code.")
         except User.DoesNotExist:
             messages.error(request, "Invalid session. Please register again.")
             return redirect('register')
     elif request.method == "POST":
         messages.error(request, "Please fix the errors in the form.")
 
-
     return render(request, "users/email_verification.html", {"form": form, "recovery": recovery})
+
 
 @require_http_methods(["GET", "POST"])
 def recovery_page(request):
@@ -171,7 +175,7 @@ def recovery_page(request):
         messages.error(request, "Please fix the errors in the form.")
 
     return render(request, "users/recovery_email_input.html", {"form": form})
-                        
+
 
 @require_http_methods(["GET", "POST"])
 def change_password_page(request):
@@ -192,14 +196,13 @@ def change_password_page(request):
         except User.DoesNotExist:
             messages.error(request, "Invalid session. Please try again.")
             return redirect('recovery')
-        
+
     elif request.method == "POST":
         messages.error(request, "Please fix the errors in the form.")
 
     return render(request, "users/change_password.html", {"form": form})
 
+
 @login_required
 def profile_page(request):
     return render(request, "users/profile.html")
-
-
