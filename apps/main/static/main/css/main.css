@@ -114,4 +114,80 @@ form {
     transform: scale(1.05);
 }
 
+.profile-container {
+    max-width: 935px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #f8f8f8;
+}
 
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 44px;
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 30px;
+}
+
+.profile-info {
+    flex-grow: 1;
+}
+
+.username {
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+.email,
+.location,
+.joined {
+    font-size: 14px;
+    color: #8e8e8e;
+    margin: 2px 0;
+}
+
+.profile-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.gallery-item img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.logout-form {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.logout-button {
+    background-color: #333; /* Dark gray to match the black theme */
+    color: #fff; /* White text */
+    border: 1px solid #4d4d4d; /* Matches sidebar border */
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Matches sidebar hover transition */
+}
+
+.logout-button:hover {
+    background-color: #ff0000; /* Red hover effect, matching sidebar links */
+    color: #fff;
+    transform: scale(1.05); /* Matches sidebar hover scale */
+    text-decoration: none;
+}

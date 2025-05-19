@@ -1,14 +1,31 @@
-{% extends 'layout.html' %} 
+{% extends 'layout.html' %}
+{% load static %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
 {% block profile_icon %}<i class="bi bi-person-fill"></i>{% endblock %}
 {% block content %}
-    <div class="features">
-        <h1>{{ title }}</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam exercitationem fugiat vero. Deserunt optio corrupti enim cum? Dolores, dolor? Aliquid.</p>
-        <button class="btn btn-warning">На страницу про нас</button>
-        {% for element in values %}
-            <p>{{ element }}</p>
-        {% endfor %}
+<div class="profile-container">
+    <div class="profile-header">
+        <img class="profile-pic" src="{% static 'users/img/cat.jpeg' %}" width="100" alt="Profile Picture">
+        <div class="profile-info">
+            <h2 class="username">@{{ user.username }}</h2>
+            <p class="location">📍 New York</p>
+            <p class="joined">Joined Soon</p>
+        </div>
+        {% if user == profile_user %}
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        {% endif %}
     </div>
+    <div class="profile-gallery">
+        <div class="gallery-item"><img src="{% static 'users/img/cat.jpeg' %}" width="200" alt="Cat 1"></div>
+        <div class="gallery-item"><img src="{% static 'users/img/cat.jpeg' %}" width="200" alt="Cat 2"></div>
+        <div class="gallery-item"><img src="{% static 'users/img/cat.jpeg' %}" width="200" alt="Cat 3"></div>
+        <div class="gallery-item"><img src="{% static 'users/img/cat.jpeg' %}" width="200" alt="Cat 4"></div>
+        <div class="gallery-item"><img src="{% static 'users/img/cat.jpeg' %}" width="200" alt="Cat 5"></div>
+        <div class="gallery-item"><img src="{% static 'users/img/cat.jpeg' %}" width="200" alt="Cat 6"></div>
+    </div>
+</div>
 {% endblock %}

@@ -5,12 +5,14 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import random
+from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.views.decorators.http import require_http_methods
 from .forms import *
 from .models import EmailVerification
 from django.utils import timezone
 from datetime import timedelta
+from django.http import HttpResponse
 
 
 @require_http_methods(["GET", "POST"])
@@ -31,6 +33,12 @@ def login_page(request):
     elif request.method == "POST":
         messages.error(request, "Please fix the errors in the form")
     return render(request, "users/login.html")
+
+
+@login_required
+def logout_page(request):
+    logout(request)
+    return redirect('login')
 
 
 @require_http_methods(["GET", "POST"])
@@ -204,5 +212,16 @@ def change_password_page(request):
 
 
 @login_required
-def profile_page(request):
-    return render(request, "users/profile.html")
+def profile_page(request, username=None):
+    if username is None:
+        return redirect('profile', username=request.user.username)
+
+    profile_user = get_object_or_404(User, username=request.user.username)
+    user = User.objects.get(username=username)
+    if request.user.username != user.get_username():
+        # return HttpResponse("Other user profile")
+        return render(request, "users/profile.html", {'user': user, 'profile_user': profile_user})
+
+    elif request.user.username == user.get_username():
+        # return HttpResponse("Your profile")
+        return render(request, "users/profile.html", {'user': user, 'profile_user': profile_user})
