@@ -6,11 +6,11 @@
 {% block content %}
 <div class="profile-container">
     <div class="profile-header">
-        <img class="profile-pic" src="{% static 'users/img/cat.jpeg' %}" width="100" alt="Profile Picture">
+        <img class="profile-pic" src="{{ profile_data.profile_picture.url }}" width="100" alt="Profile Picture">
         <div class="profile-info">
             <h2 class="username">@{{ profile.username }}</h2>
             <p class="location">📍 New York</p>
-            <p class="joined">Joined Soon</p>
+            <p class="joined">Joined at {{ profile_data.joined_at }}</p>
         </div>
         {% if profile == profile_user %}
             <form method="post" action="{% url 'logout' %}" class="logout-form">

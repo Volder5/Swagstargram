@@ -220,10 +220,11 @@ def profile_page(request, username=None):
 
     profile_user = get_object_or_404(User, username=request.user.username)
     profile = User.objects.get(username=username)
+    profile_data = Profile.objects.get(user=profile)
     if request.user.username != profile.get_username():
         # return HttpResponse("Other user profile")
-        return render(request, "users/profile.html", {'profile': profile, 'profile_user': profile_user})
+        return render(request, "users/profile.html", {'profile': profile, 'profile_user': profile_user, 'profile_data': profile_data})
 
     elif request.user.username == profile.get_username():
         # return HttpResponse("Your profile")
-        return render(request, "users/profile.html", {'profile': profile, 'profile_user': profile_user})
+        return render(request, "users/profile.html", {'profile': profile, 'profile_user': profile_user, 'profile_data': profile_data})

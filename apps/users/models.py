@@ -14,7 +14,7 @@ class EmailVerification(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=50, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True, default='profile_pics/person-fill.svg')
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True, default='pics/user_picture_none.png')
     joined_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
