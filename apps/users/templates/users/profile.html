@@ -1,18 +1,18 @@
 {% extends 'layout.html' %}
 {% load static %}
 
-{% block title %}{{ user.username }}{% endblock %}
+{% block title %}{{ profile.username }}{% endblock %}
 {% block profile_icon %}<i class="bi bi-person-fill"></i>{% endblock %}
 {% block content %}
 <div class="profile-container">
     <div class="profile-header">
         <img class="profile-pic" src="{% static 'users/img/cat.jpeg' %}" width="100" alt="Profile Picture">
         <div class="profile-info">
-            <h2 class="username">@{{ user.username }}</h2>
+            <h2 class="username">@{{ profile.username }}</h2>
             <p class="location">📍 New York</p>
             <p class="joined">Joined Soon</p>
         </div>
-        {% if user == profile_user %}
+        {% if profile == profile_user %}
             <form method="post" action="{% url 'logout' %}" class="logout-form">
                 {% csrf_token %}
                 <button type="submit" class="logout-button">Logout</button>

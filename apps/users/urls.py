@@ -9,6 +9,5 @@ urlpatterns = [
     re_path(r'^profile/(?P<username>\w+)?/$', views.profile_page, name='profile'),
     re_path(r'^verify-email/(?P<recovery>\d+)?/$', views.email_verification_page, name='email_verify'),
     path('recovery/', views.recovery_page, name='recovery'),
-    path('change_password/', views.recovery_page, name='change_password'),
-    path('users/change-password/', views.change_password_page, name='change_password'),
+    path('change-password/', views.change_password_page, name='change_password'),
 ]

@@ -9,10 +9,13 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.views.decorators.http import require_http_methods
 from .forms import *
-from .models import EmailVerification
+from .models import EmailVerification, Profile
 from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponse
+import os
+from django.core.files import File
+from django.conf import settings
 
 
 @require_http_methods(["GET", "POST"])
@@ -116,15 +119,15 @@ def email_verification_page(request, recovery=False):
             verification = EmailVerification.objects.filter(
                 user=user,
                 code=input_code,
-                is_verified=False,  # Always check unverified codes
+                is_verified=False, 
                 created_at__gte=timezone.now() - timedelta(minutes=5)
             ).first()
             if verification:
+                EmailVerification.objects.filter(user=user).delete()
                 if not recovery:
-                    verification.is_verified = True
-                    verification.save()
                     user.is_active = True
                     user.save()
+                    profile = Profile.objects.create(user=user)
                     messages.success(
                         request, "Email verified and account created!")
                     if 'user_id' in request.session:
@@ -135,9 +138,8 @@ def email_verification_page(request, recovery=False):
                     else:
                         return redirect('login')
                 else:
-                    verification.is_verified = True
-                    verification.save()
                     return redirect("change_password")
+                
             else:
                 messages.error(
                     request, "Invalid or expired verification code.")
@@ -217,11 +219,11 @@ def profile_page(request, username=None):
         return redirect('profile', username=request.user.username)
 
     profile_user = get_object_or_404(User, username=request.user.username)
-    user = User.objects.get(username=username)
-    if request.user.username != user.get_username():
+    profile = User.objects.get(username=username)
+    if request.user.username != profile.get_username():
         # return HttpResponse("Other user profile")
-        return render(request, "users/profile.html", {'user': user, 'profile_user': profile_user})
+        return render(request, "users/profile.html", {'profile': profile, 'profile_user': profile_user})
 
-    elif request.user.username == user.get_username():
+    elif request.user.username == profile.get_username():
         # return HttpResponse("Your profile")
-        return render(request, "users/profile.html", {'user': user, 'profile_user': profile_user})
+        return render(request, "users/profile.html", {'profile': profile, 'profile_user': profile_user})

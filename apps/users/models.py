@@ -11,5 +11,12 @@ class EmailVerification(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.code}"
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(max_length=50, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True, default='profile_pics/person-fill.svg')
+    joined_at = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
 # Create your models here.
