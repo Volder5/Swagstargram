@@ -1,0 +1,20 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block title %}Recovery{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        <h2>Recovery</h2>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="email">Email</label>
+            <input name="email" type="email" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Check</button>
+        <div class="mb-3">
+            <a href="{% url 'login' %}">Already have an account? Log in</a><br>
+            <a href="{% url 'register' %}">Don't have an account? Register</a>
+        </div>
+    </form>
+{% endblock %}

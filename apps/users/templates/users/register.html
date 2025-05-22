@@ -1,0 +1,28 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        <h2>Register</h2>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username">Username</label>
+            <input name="username" type="text" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="email">Email</label>
+            <input name="email" type="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password">Password</label>
+            <input name="password" type="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+        <div class="mb-3">
+            <a href="{% url 'login' %}">Already have an account? Log in</a><br>
+            <a href="{% url 'recovery' %}">Forget password or username? Recovery</a>
+        </div>
+    </form>
+{% endblock %}
